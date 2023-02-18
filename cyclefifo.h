@@ -57,6 +57,7 @@ public:
             tail->next = node;
             tail = node;
             allocator.destroy(head);
+            allocator.deallocate(head, 1);
             head = head_temp;
         }
     }
@@ -76,13 +77,17 @@ public:
 
             if (m_count == 1) {
                 allocator.destroy(head);
+                allocator.deallocate(head, 1);
                 head = tail;
                 return;
             }
 
             Node<T> *head_temp = head->next;
-            allocator.destroy(head);
-            head = head_temp;
+            tail->next = head->next;
+            head->next = head_temp->next;
+            head->elem = head_temp->elem;
+            allocator.destroy(head_temp);
+            allocator.deallocate(head_temp, 1);
         }
     }
     //------------------count---------------------------------
