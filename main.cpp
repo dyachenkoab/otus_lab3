@@ -55,7 +55,7 @@ public:
         if (n == 0)
             return nullptr;
 
-        if (m_allocations == size) {
+        if ((m_allocations + n) > size) {
             throw bad_alloc();
         }
 
@@ -69,8 +69,8 @@ public:
         size_t blockSize = getSizeofBlock<sizeof(T)>(m_size - m_allocations);
         if (std::align(alignof(T), sizeof(T), m_partial_mem, blockSize)) {
             T *result = reinterpret_cast<T *>(m_partial_mem);
-            m_partial_mem = (T *)m_partial_mem + 1;
-            m_allocations++;
+            m_partial_mem = (T *)m_partial_mem + n;
+            m_allocations += n;
             return result;
         }
         throw bad_alloc();
@@ -120,46 +120,46 @@ int main()
 {
     const int size = 10;
     {
-        map<int, int> normal_map;
-        for (int i = 0; i < size; ++i) {
-            normal_map.insert(make_pair(i, fact(i)));
-        }
+//        map<int, int> normal_map;
+//        for (int i = 0; i < size; ++i) {
+//            normal_map.insert(make_pair(i, fact(i)));
+//        }
 
-        map<int, int, less<int>, my_alloc<pair<int, int>, size>> alloc_map;
-        for (int i = 0; i < size; ++i) {
-            alloc_map[i] = fact(i);
-        }
+//        map<int, int, less<int>, my_alloc<pair<int, int>, size>> alloc_map;
+//        for (int i = 0; i < size; ++i) {
+//            alloc_map[i] = fact(i);
+//        }
 
-        cout << "---------------------normal map--------------------" << endl;
-        for (auto &pair : normal_map) {
-            cout << get<0>(pair) << " " << get<1>(pair) << endl;
-        }
+//        cout << "---------------------normal map--------------------" << endl;
+//        for (auto &pair : normal_map) {
+//            cout << get<0>(pair) << " " << get<1>(pair) << endl;
+//        }
 
-        cout << "---------------------alloc map--------------------" << endl;
-        for (auto pair : alloc_map) {
-            cout << get<0>(pair) << " " << get<1>(pair) << endl;
-        }
+//        cout << "---------------------alloc map--------------------" << endl;
+//        for (auto pair : alloc_map) {
+//            cout << get<0>(pair) << " " << get<1>(pair) << endl;
+//        }
     }
 
     {
-        CycleFIFO<int> normal_fifo(size);
-        for (int i = 0; i < size; ++i) {
-            normal_fifo.push(i);
-        }
+//        CycleFIFO<int> normal_fifo(size);
+//        for (int i = 0; i < size; ++i) {
+//            normal_fifo.push(i);
+//        }
 
         CycleFIFO<int, my_alloc<Node<int>, size>> alloc_fifo(size);
         for (int i = 0; i < size; ++i) {
             alloc_fifo.push(i);
         }
 
-        cout << "---------------------normal fifo--------------------" << endl;
-        for (int i = 0; i < size; ++i) {
-            cout << i << " " << normal_fifo[i] << endl;
-        }
-        cout << "---------------------alloc fifo--------------------" << endl;
-        for (int i = 0; i < size; ++i) {
-            cout << i << " " << alloc_fifo[i] << endl;
-        }
+//        cout << "---------------------normal fifo--------------------" << endl;
+//        for (int i = 0; i < size; ++i) {
+//            cout << i << " " << normal_fifo[i] << endl;
+//        }
+//        cout << "---------------------alloc fifo--------------------" << endl;
+//        for (int i = 0; i < size; ++i) {
+//            cout << i << " " << alloc_fifo[i] << endl;
+//        }
     }
     return 0;
 }
