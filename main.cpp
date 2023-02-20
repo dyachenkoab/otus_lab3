@@ -69,7 +69,7 @@ public:
         size_t blockSize = getSizeofBlock<sizeof(T)>(m_size - m_allocations);
         if (std::align(alignof(T), sizeof(T), m_partial_mem, blockSize)) {
             T *result = reinterpret_cast<T *>(m_partial_mem);
-            m_partial_mem = (T *)m_partial_mem + sizeof(T);
+            m_partial_mem = (T *)m_partial_mem + 1;
             m_allocations++;
             return result;
         }

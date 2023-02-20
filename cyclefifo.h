@@ -52,13 +52,13 @@ public:
             tail = node;
             m_count++;
         } else {
-            Node<T> *head_temp = head->next;
-            node->next = head->next;
+            Node<T> *head_temp = head;
+            head = head->next;
+            node->next = head;
             tail->next = node;
             tail = node;
-            allocator.destroy(head);
-            allocator.deallocate(head, 1);
-            head = head_temp;
+            allocator.destroy(head_temp);
+            allocator.deallocate(head_temp, 1);
         }
     }
     //--------------------pop--------------------------------
@@ -76,16 +76,17 @@ public:
             }
 
             if (m_count == 1) {
-                allocator.destroy(head);
-                allocator.deallocate(head, 1);
-                head = tail;
+                Node<T> *head_temp = head;
+                head = head->next;
+                tail->next = head;
+                allocator.destroy(head_temp);
+                allocator.deallocate(head_temp, 1);
                 return;
             }
 
-            Node<T> *head_temp = head->next;
+            Node<T> *head_temp = head;
             tail->next = head->next;
-            head->next = head_temp->next;
-            head->elem = head_temp->elem;
+            head = head->next;
             allocator.destroy(head_temp);
             allocator.deallocate(head_temp, 1);
         }
