@@ -75,12 +75,13 @@ public:
         }
         throw bad_alloc();
     }
-    void deallocate(T *, size_t)
+    void deallocate(T *, size_t sz)
     {
-        m_allocations--;
-        if (m_allocations == 0) {
+        m_allocations -= sz;
+        if (m_allocations <= 0) {
             free(m_total_mem);
             m_total_mem = nullptr;
+            m_allocations = 0;
         }
     }
 
