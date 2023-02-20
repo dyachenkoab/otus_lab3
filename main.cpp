@@ -1,6 +1,6 @@
 #include <iostream>
 #include <map>
-#include <limits.h>
+#include <limits>
 #include "cyclefifo.h"
 
 using namespace std;
@@ -18,7 +18,7 @@ long double fact(int N)
 template<size_t TypeSize>
 size_t getSizeofBlock(size_t count)
 {
-    size_t maxPossible = SIZE_MAX / TypeSize;
+    size_t maxPossible = numeric_limits<size_t>::max() / TypeSize;
     if (count > maxPossible) {
         throw std::bad_alloc();
     }
